@@ -8,13 +8,13 @@
 // set the model accordingly:
 //  - 0: DL-series (7segment LCD)
 //  - 1: CMG-series (16x2 matrix LCD)
-#define MYMODEL 0
+#define MYMODEL 1
 
-// change to LOW the following if you want the relay be (de)activated on
+// change to HIGH the following if you want the relay be (de)activated on
 // pushbutton *release* instead of *press*
-#define ACTIONSIGNAL LOW
+#define ACTIONSIGNAL HIGH
 
 // Set to 1 if you want last mode and times used be preserved when you
 // power off the timer
-#define EPR 0
+#define EPR 1
 
