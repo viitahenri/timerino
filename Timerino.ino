@@ -590,26 +590,26 @@ void init_timermode() {
 /*** Keypad management functions ***/
 //void keypadEvent(KeypadEvent key) {}
 void read_key() {
-  char key = ' ';
+  Key* key = new Key();
   boolean ast = false;
   boolean canc = false;
   if (keypad.getKeys()) { //Fill an array with all the keys pressed
     for (int ki=0; ki<LIST_MAX; ki++) { // Browse the array
       if (keypad.key[ki].kchar != NO_KEY) {
-        key = keypad.key[ki].kchar;
-        if (key == '*') {
+        key = &keypad.key[ki];
+        if (key->kchar == '*') {
           ast = true;
         }
-        if (key == '#') {
+        if (key->kchar == '#') {
           canc = true;
         }
       }
     }
     if (ast == true && canc == true) {
-      key = '%';
+      key = new Key('%');
     }
     
-    switch (key) {
+    switch (key->kchar) {
       case 'A':  // Free mode
         reset();
         timer_mode = MODLINFREE | (timer_mode & 0b00001);
@@ -698,7 +698,7 @@ void read_key() {
           appo_time = time;
           say_time();
         } else if (timer_mode == MODLINFREE) { // setup audio on/off
-          switch (key) {
+          switch (key->kchar) {
             case '0':
               if (mute == true) {
                 mute = false;
@@ -730,7 +730,7 @@ void read_key() {
             default: break;
           }
         } else if (timer_mode == MODFSTPREC) { // set precision
-          switch (key) {
+          switch (key->kchar) {
             case '1':  precis = 1; say_prec();
                       #if 1 == EPR
                         eeprom_write_word((uint16_t *)3, precis);
@@ -783,28 +783,29 @@ void read_key() {
                       break;
             default: break;
           } 
-        } else {
-            switch (ncifra) {
-              case 0:
-                time = time + (key-48);
-                ncifra++;
-                break;
-              case 1:
-                time = time * 10 + (key-48);
-                ncifra++;
-                break;
-              case 2:
-                time = time * 10 + (key-48);
-                ncifra++;
-                break;
-              case 3:
-                time = time * 10 + (key-48);
-                ncifra++;
-                break;
-              default:
-                // Non faccio nulla
-                break;
-            }
+        } else if (key->kstate == PRESSED) {
+          char keychar = key->kchar;
+          switch (ncifra) {
+            case 0:
+              time = time + (keychar-48);
+              ncifra++;
+              break;
+            case 1:
+              time = time * 10 + (keychar-48);
+              ncifra++;
+              break;
+            case 2:
+              time = time * 10 + (keychar-48);
+              ncifra++;
+              break;
+            case 3:
+              time = time * 10 + (keychar-48);
+              ncifra++;
+              break;
+            default:
+              // Non faccio nulla
+              break;
+          }
           appo_time = time;
           say_time();
           
