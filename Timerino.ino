@@ -606,7 +606,7 @@ void read_key() {
       }
     }
     if (ast == true && canc == true) {
-      key = new Key('%');
+      key->kchar = '%';
     }
     
     switch (key->kchar) {
